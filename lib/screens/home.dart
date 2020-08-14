@@ -113,7 +113,7 @@ class _HomeState extends State<Home> {
                         GaugeAnnotation(
                             widget: Container(
                               child: Text(
-                                displayRate.toString() + ' ' + unitText,
+                                displayRate.toStringAsFixed(2) + ' ' + unitText,
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -149,6 +149,7 @@ class _HomeState extends State<Home> {
                           onDone: (double transferRate, SpeedUnit unit) {
                             setState(() {
                               uploadRate = transferRate;
+                              uploadRate = uploadRate * 10;
                               protectGauge(uploadRate);
                               unitText =
                                   unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
@@ -160,8 +161,11 @@ class _HomeState extends State<Home> {
                                 style: alertStyle,
                                 type: AlertType.info,
                                 title: "TEST RESULTS",
-                                desc:
-                                    'Download Speed: $downloadRate $unitText\nUpload Speed: $uploadRate $unitText',
+                                desc: 'Download Speed: ' +
+                                    downloadRate.toStringAsFixed(2) +
+                                    ' $unitText\nUpload Speed: ' +
+                                    uploadRate.toStringAsFixed(2) +
+                                    ' $unitText',
                                 buttons: [
                                   DialogButton(
                                     child: Text(
@@ -181,6 +185,7 @@ class _HomeState extends State<Home> {
                               SpeedUnit unit) {
                             setState(() {
                               uploadRate = transferRate;
+                              uploadRate = uploadRate * 10;
                               protectGauge(uploadRate);
                               unitText =
                                   unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
