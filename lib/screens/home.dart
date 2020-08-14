@@ -28,6 +28,9 @@ class _HomeState extends State<Home> {
   double displayPer = 0;
   String unitText = 'Mb/s';
 
+  // Using a flag to prevent the user from interrupting running tests
+  bool isTesting = false;
+
   void protectGauge(double rate) {
     // this function prevents the needle from exceeding the maximum limit of the gauge
     if (rate > 150) {
@@ -136,89 +139,101 @@ class _HomeState extends State<Home> {
                   color: Colors.red,
                   textColor: txtCol,
                   onPressed: () {
-                    internetSpeedTest.startDownloadTesting(
-                      onDone: (double transferRate, SpeedUnit unit) {
-                        setState(() {
-                          downloadRate = transferRate;
-                          protectGauge(downloadRate);
-                          unitText = unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
-                          downloadProgress = '100';
-                          displayPer = 100.0;
-                        });
-                        internetSpeedTest.startUploadTesting(
-                          onDone: (double transferRate, SpeedUnit unit) {
-                            setState(() {
-                              uploadRate = transferRate;
-                              uploadRate = uploadRate * 10;
-                              protectGauge(uploadRate);
-                              unitText =
-                                  unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
-                              uploadProgress = '100';
-                              displayPer = 100.0;
-                              // Display speed test results
-                              Alert(
-                                context: context,
-                                style: alertStyle,
-                                type: AlertType.info,
-                                title: "TEST RESULTS",
-                                desc: 'Download Speed: ' +
-                                    downloadRate.toStringAsFixed(2) +
-                                    ' $unitText\nUpload Speed: ' +
-                                    uploadRate.toStringAsFixed(2) +
-                                    ' $unitText',
-                                buttons: [
-                                  DialogButton(
-                                    child: Text(
-                                      "OK",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20),
+                    if (!isTesting) {
+                      setState(() {
+                        isTesting = true;
+                      });
+                      internetSpeedTest.startDownloadTesting(
+                        onDone: (double transferRate, SpeedUnit unit) {
+                          setState(() {
+                            downloadRate = transferRate;
+                            protectGauge(downloadRate);
+                            unitText = unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
+                            downloadProgress = '100';
+                            displayPer = 100.0;
+                          });
+                          internetSpeedTest.startUploadTesting(
+                            onDone: (double transferRate, SpeedUnit unit) {
+                              setState(() {
+                                uploadRate = transferRate;
+                                uploadRate = uploadRate * 10;
+                                protectGauge(uploadRate);
+                                unitText =
+                                    unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
+                                uploadProgress = '100';
+                                displayPer = 100.0;
+                                isTesting = false;
+                                // Display speed test results
+                                Alert(
+                                  context: context,
+                                  style: alertStyle,
+                                  type: AlertType.info,
+                                  title: "TEST RESULTS",
+                                  desc: 'Download Speed: ' +
+                                      downloadRate.toStringAsFixed(2) +
+                                      ' $unitText\nUpload Speed: ' +
+                                      uploadRate.toStringAsFixed(2) +
+                                      ' $unitText',
+                                  buttons: [
+                                    DialogButton(
+                                      child: Text(
+                                        "OK",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                      onPressed: () => Navigator.pop(context),
+                                      color: Color.fromRGBO(114, 137, 218, 1.0),
+                                      radius: BorderRadius.circular(0.0),
                                     ),
-                                    onPressed: () => Navigator.pop(context),
-                                    color: Color.fromRGBO(114, 137, 218, 1.0),
-                                    radius: BorderRadius.circular(0.0),
-                                  ),
-                                ],
-                              ).show();
-                            });
-                          },
-                          onProgress: (double percent, double transferRate,
-                              SpeedUnit unit) {
-                            setState(() {
-                              uploadRate = transferRate;
-                              uploadRate = uploadRate * 10;
-                              protectGauge(uploadRate);
-                              unitText =
-                                  unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
-                              uploadProgress = percent.toStringAsFixed(2);
-                              displayPer = percent;
-                            });
-                          },
-                          onError:
-                              (String errorMessage, String speedTestError) {
-                            showError(
-                                'Upload test failed! Please check your internet connection.');
-                          },
-                          testServer: uploadServer,
-                          fileSize: 20000000,
-                        );
-                      },
-                      onProgress: (double percent, double transferRate,
-                          SpeedUnit unit) {
-                        setState(() {
-                          downloadRate = transferRate;
-                          protectGauge(downloadRate);
-                          unitText = unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
-                          downloadProgress = percent.toStringAsFixed(2);
-                          displayPer = percent;
-                        });
-                      },
-                      onError: (String errorMessage, String speedTestError) {
-                        showError(
-                            'Download test failed! Please check your internet connection.');
-                      },
-                      testServer: downloadServer,
-                      fileSize: 20000000,
-                    );
+                                  ],
+                                ).show();
+                              });
+                            },
+                            onProgress: (double percent, double transferRate,
+                                SpeedUnit unit) {
+                              setState(() {
+                                uploadRate = transferRate;
+                                uploadRate = uploadRate * 10;
+                                protectGauge(uploadRate);
+                                unitText =
+                                    unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
+                                uploadProgress = percent.toStringAsFixed(2);
+                                displayPer = percent;
+                              });
+                            },
+                            onError:
+                                (String errorMessage, String speedTestError) {
+                              showError(
+                                  'Upload test failed! Please check your internet connection.');
+                              setState(() {
+                                isTesting = false;
+                              });
+                            },
+                            testServer: uploadServer,
+                            fileSize: 20000000,
+                          );
+                        },
+                        onProgress: (double percent, double transferRate,
+                            SpeedUnit unit) {
+                          setState(() {
+                            downloadRate = transferRate;
+                            protectGauge(downloadRate);
+                            unitText = unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
+                            downloadProgress = percent.toStringAsFixed(2);
+                            displayPer = percent;
+                          });
+                        },
+                        onError: (String errorMessage, String speedTestError) {
+                          showError(
+                              'Download test failed! Please check your internet connection.');
+                          setState(() {
+                            isTesting = false;
+                          });
+                        },
+                        testServer: downloadServer,
+                        fileSize: 20000000,
+                      );
+                    }
                   },
                 ),
               ],
