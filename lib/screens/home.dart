@@ -1,11 +1,13 @@
 import 'package:comet_internet_speed_test/components/errorMsg.dart';
 import 'package:comet_internet_speed_test/components/speedLabels.dart';
+import 'package:comet_internet_speed_test/constants/alertStyle.dart';
 import 'package:comet_internet_speed_test/constants/btnStyle.dart';
 import 'package:comet_internet_speed_test/constants/palette.dart';
 import 'package:comet_internet_speed_test/constants/testServer.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:internet_speed_test/callbacks_enum.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:comet_internet_speed_test/components/progressBar.dart';
 
@@ -152,6 +154,27 @@ class _HomeState extends State<Home> {
                                   unit == SpeedUnit.Kbps ? 'Kb/s' : 'Mb/s';
                               uploadProgress = '100';
                               displayPer = 100.0;
+                              // Display speed test results
+                              Alert(
+                                context: context,
+                                style: alertStyle,
+                                type: AlertType.info,
+                                title: "TEST RESULTS",
+                                desc:
+                                    'Download Speed: $downloadRate $unitText\nUpload Speed: $uploadRate $unitText',
+                                buttons: [
+                                  DialogButton(
+                                    child: Text(
+                                      "OK",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                    onPressed: () => Navigator.pop(context),
+                                    color: Color.fromRGBO(114, 137, 218, 1.0),
+                                    radius: BorderRadius.circular(0.0),
+                                  ),
+                                ],
+                              ).show();
                             });
                           },
                           onProgress: (double percent, double transferRate,

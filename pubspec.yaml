@@ -32,6 +32,7 @@ dependencies:
   syncfusion_flutter_gauges: ^18.2.48
   percent_indicator: "^2.1.5"
   fluttertoast: ^7.0.2
+  rflutter_alert: ^1.0.3
 
 dev_dependencies:
   flutter_test:

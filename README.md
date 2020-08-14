@@ -8,6 +8,7 @@ Comet is a Flutter app that measures internet download and upload speed.
 * syncfusion_flutter_gauges: [link](https://pub.dev/packages/syncfusion_flutter_gauges)
 * percent_indicator: [link](https://pub.dev/packages/percent_indicator)
 * fluttertoast: [link](https://pub.dev/packages/fluttertoast)
+* rflutter_alert: [link](https://pub.dev/packages/rflutter_alert)
 
 ## Syncfusion Package License
 The gauge featured in this application is powered by Syncfusion. In order to activate this gauge, you must obtain a license key for this package.<br />
