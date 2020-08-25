@@ -2,6 +2,11 @@
 
 Comet is a Flutter app that measures internet download and upload speed.
 
+## Screenshots
+<img src="https://raw.githubusercontent.com/abdulalikhan/comet_internet_speed_test/master/1.png" height="600em" /> <img src="https://raw.githubusercontent.com/abdulalikhan/comet_internet_speed_test/master/2.png" height="600em" /> 
+<br>
+<img src="https://raw.githubusercontent.com/abdulalikhan/comet_internet_speed_test/master/3.png" height="600em" />
+
 ## Packages
 * cupertino_icons: [link](https://pub.dev/packages/cupertino_icons)
 * internet_speed_test: [link](https://pub.dev/packages/internet_speed_test)
